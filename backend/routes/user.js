@@ -114,8 +114,7 @@ router.put('/', authMiddleware, async (req, res)=>{
             message: "No such user exists"
         })
     }else{
-        user.updateOne({_id: req.userId}, req.body)   
-        console.log(user);
+        await user.updateOne(req.body)   
 
         return res.json({
             message: `updated successfully`
@@ -149,24 +148,5 @@ router.get('/bulk', async (req, res)=>{
     })
 
 })
-
-
-
-// Transaction in database
-// const transferFunds = async (fromAccountId, toAccountId, amount) => {
-//    if(sender.balance < amount){
-//     res.json({
-//         message: "insufficient balance"
-//     })
-//    }
-// 	  await Account.findByIdAndUpdate(fromAccountId, { $inc: { balance: -amount } });
-
-//     // Increment the balance of the toAccount
-//     await Account.findByIdAndUpdate(toAccountId, { $inc: { balance: amount } });
-// }
-
-// Example usage
-// transferFunds('fromAccountID', 'toAccountID', 100);
-
 module.exports= router; 
 

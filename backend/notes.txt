@@ -1,0 +1,42 @@
+// The correct way to do transaction in mongodb 
+// err - MongoServerError: Transaction numbers are only allowed on a replic
+//a set member or mongos
+
+
+router.post("/transfer", authMiddleware, async(req, res)=>{
+    const currSession = await mongoose.startSession();
+    currSession.startTransaction();
+    const account = await Account.findOne({
+        userId: req.userId
+    }).session(currSession);
+    const balance = account.balance;
+
+    if(!account || balance< req.amount){
+        await currSession.abortTransaction();
+        return res.status(400).json({
+            message: "Insufficient balance"
+        })
+    }
+
+    const toAccount = await Account.findOne({
+        userId: req.to
+    }).session(currSession);
+    const toBalance = toAccount.balance;
+
+    if(!toAccount){
+        await currSession.abortTransaction();
+        return res.status(400).json({
+            message: "Invalid account"
+        })
+    }
+
+    //Performign transaction
+    await Account.updateOne({userId : req.userId}, { $inc: {balance: -req.amount}}).session(currSession);
+    await Account.updateOne({userId : req.to}, { $inc: {balance: req.amount}}).session(currSession);
+
+    currSession.commitTransaction();
+    res.json({
+        message: "Transfer Successful"
+    })
+})
+ 
