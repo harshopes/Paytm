@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 export const Dashboard = () => {
     const [balance, setBalance] = useState(0)
     const token = localStorage.getItem("token");
-    console.log(token);
+    // console.log(token);
     useEffect(() => {
         axios.get("http://localhost:3000/api/v1/account/balance", {
             headers: {
@@ -17,7 +17,7 @@ export const Dashboard = () => {
             setBalance(response.data.balance);
         })
     }, [token])
-    console.log(balance)
+    // console.log(balance)
 
     return <div>
         <Appbar />
