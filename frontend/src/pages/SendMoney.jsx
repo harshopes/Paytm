@@ -61,6 +61,8 @@ export default function SendMoney() {
                                     .catch(err => {
                                         if (err.response && err.response.status === 400) {
                                             setError("Not enough Balance"); // Set error message
+                                        } if (err.response && err.response.status == 401) {
+                                            setError("Invalid");
                                         } else {
                                             setError("Transfer failed"); // Handle other errors
                                         }

@@ -20,6 +20,11 @@ router.post("/transfer", authMiddleware, async(req, res) => {
         userId: req.userId
     });
     const balance = account.balance;
+    if(req.body.amount <0){
+        return res.status(401).json({
+            message: "Invalid"
+        });
+    }
 
     if (!account || balance < req.body.amount) {
         return res.status(400).json({
